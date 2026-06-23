@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  BERYL MUTHEU — EXECUTIVE ASSISTANT PORTFOLIO
+  ============================================================
+  This is a single-file website: all the styling (CSS) lives
+  inside the <style> tag, and all the behaviour (JavaScript)
+  lives inside the <script> tag near the bottom.
+
+  If you are new to code, here is the big picture:
+  - HTML  = the content and structure (the "what")
+  - CSS   = the look and spacing (the "how it appears")
+  - JS    = the interactivity (the "what happens when you do X")
+
+  Search for the big "SECTION" comments below to jump around.
+  ============================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beryl Mutheu — Executive Assistant</title>
+<meta name="description" content="Beryl Mutheu, Executive Assistant. Executive support, elevated.">
+
+<!--
+  GOOGLE FONTS
+  Fraunces = an elegant serif with personality, used for big headings.
+  Inter    = a clean, easy-to-read sans-serif, used for body text and labels.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     SECTION: DESIGN TOKENS (CSS VARIABLES)
+     ----------------------------------------------------------
+     These are named values we re-use everywhere. Changing a
+     value here updates it across the entire site. Think of this
+     as the site's "paint palette and ruler" in one place.
+     ============================================================ */
+  :root{
+    /* --- Colour palette: milk white + gold, kept rich and warm --- */
+    --milk:        #FBF8F2;  /* main background, soft milk white   */
+    --milk-deep:    #F3EDE0;  /* secondary panel background         */
+    --ink:          #221F1A;  /* primary text, warm near-black      */
+    --ink-soft:     #5C564A;  /* secondary / muted text             */
+    --gold:         #B5872E;  /* primary gold accent                */
+    --gold-light:   #DCB463;  /* lighter gold for highlights/glow   */
+    --gold-deep:    #8C661F;  /* darker gold for hover states       */
+    --line:         rgba(34,31,26,0.12); /* hairline borders        */
+    --line-gold:    rgba(181,135,46,0.35);
+
+    /* --- Typography --- */
+    --font-display: "Fraunces", serif;
+    --font-body:    "Inter", sans-serif;
+
+    /* --- Layout --- */
+    --nav-width: 230px;     /* width of the fixed side panel on desktop */
+    --edge: clamp(24px, 5vw, 64px); /* responsive side padding */
+  }
+
+  /* Respect people who have asked their system to reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  /* ============================================================
+     SECTION: RESET & BASE STYLES
+     ============================================================ */
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--milk);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  img,svg{ display:block; max-width:100%; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* A visible, elegant focus ring for keyboard users (accessibility) */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  ::selection{ background:var(--gold-light); color:var(--ink); }
+
+  h1,h2,h3{ font-family:var(--font-display); font-weight:500; line-height:1.1; }
+
+  /* Small uppercase "eyebrow" label style, used throughout the site */
+  .eyebrow{
+    font-family:var(--font-body);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold-deep);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px; height:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+
+  /* Re-usable "page section" spacing wrapper */
+  .section{
+    padding:120px var(--edge) 0;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .section:last-of-type{ padding-bottom:120px; }
+
+  /* ============================================================
+     SECTION: SIDE NAVIGATION (the "unconventional" nav panel)
+     ----------------------------------------------------------
+     On desktop this is a fixed vertical strip on the left edge
+     of the screen. It holds the name, a gold "spine" line that
+     fills in as you scroll, and dots for each section.
+     On small screens it collapses into a slim top bar (see the
+     mobile media query further down).
+     ============================================================ */
+  .side-nav{
+    position:fixed;
+    top:0; left:0;
+    width:var(--nav-width);
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:48px 0 48px 0;
+    z-index:100;
+    background:linear-gradient(180deg, var(--milk) 0%, var(--milk) 85%, rgba(251,248,242,0.4) 100%);
+  }
+
+  /* The little monogram + name block at the top of the nav */
+  .brand{
+    padding-left:40px;
+    display:block;
+  }
+  .brand .mark{
+    width:42px; height:42px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--font-display);
+    font-size:17px;
+    color:var(--gold-deep);
+    margin-bottom:14px;
+  }
+  .brand .name{
+    font-family:var(--font-display);
+    font-size:17px;
+    letter-spacing:0.02em;
+    color:var(--ink);
+  }
+  .brand .role{
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .brand .brand-tagline{
+    margin-top:18px;
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:12px;
+    line-height:1.6;
+    color:var(--gold-deep);
+    border-top:1px solid var(--line-gold);
+    padding-top:14px;
+  }
+
+  /* The vertical track that holds nav links + the moving gold spine */
+  .nav-track{
+    position:relative;
+    flex:1;
+    margin:48px 0 0 0;
+    padding-left:40px;
+    display:flex;
+  }
+  /* The thin grey base-line representing the whole page */
+  .nav-track .rail{
+    position:absolute;
+    left:18px; top:4px; bottom:4px;
+    width:1px;
+    background:var(--line);
+  }
+  /* The gold fill that grows inside the rail as you scroll (signature element) */
+  .nav-track .rail-fill{
+    position:absolute;
+    left:18px; top:4px;
+    width:1px;
+    height:0%; /* JS updates this on scroll */
+    background:var(--gold);
+    transition:height 0.15s linear;
+  }
+  /* The small dot that travels along the rail to mark current position */
+  .nav-track .rail-dot{
+    position:absolute;
+    left:14px; top:4px; /* JS updates "top" as you scroll */
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 4px rgba(181,135,46,0.18);
+    transition:top 0.15s linear;
+  }
+
+  .nav-links{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+  }
+  .nav-links li button{
+    position:relative;
+    display:inline-block;
+    padding-left:24px;
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    transition:color 0.25s ease;
+    background:none;
+    border:none;
+    font-family:var(--font-body);
+    cursor:pointer;
+  }
+  /* Highlight the link for whichever section is active (JS toggles this class) */
+  .nav-links li button.active{
+    color:var(--ink);
+    font-weight:600;
+  }
+  .nav-links li button.active::before{
+    /* a small gold tick that appears beside the active link */
+    content:"";
+    position:absolute;
+    left:0; top:50%;
+    transform:translateY(-50%);
+    width:14px; height:1px;
+    background:var(--gold);
+  }
+
+  /* Footer-of-nav: tiny note + email, always visible at bottom of the panel */
+  .nav-foot{
+    padding-left:40px;
+    font-size:11px;
+    color:var(--ink-soft);
+    letter-spacing:0.04em;
+  }
+  .nav-foot a{ color:var(--gold-deep); }
+  .nav-foot a:hover{ color:var(--gold); }
+
+  /* Everything that is not the nav sits to the right of it on desktop */
+  .page{
+    margin-left:var(--nav-width);
+  }
+
+  /* ============================================================
+     SECTION: HERO
+     ============================================================ */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:140px var(--edge) 80px;
+    max-width:1180px;
+    position:relative;
+  }
+
+  .hero .eyebrow{ margin-bottom:28px; }
+
+  /* Shared smoothing for the hero parallax effect: whichever of these
+     elements the JS moves, it eases into place rather than jumping. */
+  .hero h1, .hero .role, .hero .tagline, .hero .stats{
+    transition:transform 0.2s ease-out;
+    will-change:transform;
+  }
+
+  .hero h1{
+    font-size:clamp(48px, 8vw, 96px);
+    color:var(--ink);
+    letter-spacing:-0.01em;
+    /* a faint double text-shadow gives the letters a subtle engraved, three
+       dimensional edge, like the name is pressed into the page rather than
+       printed flat on top of it */
+    text-shadow:
+      1px 1px 0 rgba(220,180,99,0.5),
+      2px 2px 0 rgba(140,102,31,0.18);
+  }
+  .hero h1 span{
+    /* the surname rendered in gold italics, for a refined accent */
+    font-style:italic;
+    color:var(--gold);
+    text-shadow:
+      1px 1px 0 rgba(34,31,26,0.12),
+      2px 2px 0 rgba(140,102,31,0.12);
+  }
+
+  .hero .role{
+    margin-top:18px;
+    font-family:var(--font-display);
+    font-size:clamp(18px, 2.4vw, 24px);
+    font-style:italic;
+    color:var(--ink-soft);
+  }
+
+  .hero .tagline{
+    margin-top:26px;
+    max-width:560px;
+    font-size:17px;
+    color:var(--ink-soft);
+  }
+
+  /* The three stat counters, laid out as an asymmetric row with thin gold dividers */
+  .stats{
+    margin-top:64px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:48px;
+  }
+  .stat{
+    padding-left:24px;
+    border-left:1px solid var(--line-gold);
+    min-width:120px;
+  }
+  .stat:first-child{ padding-left:0; border-left:none; }
+  .stat .num{
+    font-family:var(--font-display);
+    font-size:44px;
+    color:var(--ink);
+    line-height:1;
+    /* same engraved trick as the headline, just lighter, so the big
+       numbers feel carved rather than printed */
+    text-shadow:1px 1px 0 rgba(220,180,99,0.45);
+  }
+  .stat .num::after{
+    content:"+";
+    color:var(--gold);
+  }
+  .stat .label{
+    margin-top:8px;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+
+
+  /* ============================================================
+     SECTION: ABOUT
+     ----------------------------------------------------------
+     Asymmetric layout: a large drop-cap style opening quote mark,
+     the bio text in a slightly narrower column than the page,
+     and the value tags arranged as a loosely "stacked" cascade
+     to the side rather than a tidy grid or plain two columns.
+     ============================================================ */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:60px;
+    align-items:start;
+  }
+
+  .about-copy{ position:relative; padding-top:10px; }
+  .about-copy .big-quote{
+    font-family:var(--font-display);
+    font-size:120px;
+    line-height:0.6;
+    color:var(--gold-light);
+    position:absolute;
+    left:-12px; top:-10px;
+    z-index:0;
+    user-select:none;
+  }
+  .about-copy p{
+    position:relative;
+    z-index:1;
+    max-width:620px;
+    color:var(--ink-soft);
+    margin-bottom:20px;
+    font-size:16.5px;
+    font-weight:400; /* explicitly normal weight, so no line of the bio looks bold */
+  }
+
+  /* The value tags: a sideways-flowing row (wrapping onto a new line
+     when needed) with a gentle up/down zig-zag, so it feels playful
+     and hand-placed rather than a rigid single column or plain grid. */
+  .values{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:14px;
+    padding-top:36px;
+    align-items:flex-start;
+  }
+  .values .tag{
+    border:1px solid var(--line-gold);
+    background:var(--milk-deep);
+    padding:10px 20px;
+    border-radius:999px;
+    font-size:13px;
+    letter-spacing:0.04em;
+    color:var(--ink);
+    white-space:nowrap;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .values .tag:hover{
+    box-shadow:0 10px 18px -10px rgba(140,102,31,0.35);
+  }
+  /* alternate a small vertical nudge so the row has a gentle zig-zag
+     instead of sitting in a perfectly straight line */
+  .values .tag:nth-child(even){ transform:translateY(14px); }
+  /* on hover, each tag lifts up a little from wherever it is resting,
+     odd tags rise from 0px, even tags rise from their +14px offset */
+  .values .tag:nth-child(odd):hover{ transform:translateY(-4px); }
+  .values .tag:nth-child(even):hover{ transform:translateY(10px); }
+  .values .tag .dot{
+    color:var(--gold);
+    margin-right:8px;
+  }
+
+  /* ============================================================
+     SECTION: SKILLS & TOOLS
+     ============================================================ */
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    flex-wrap:wrap;
+    margin-bottom:56px;
+  }
+  .section-head h2{ font-size:clamp(30px,4vw,42px); margin-top:14px; }
+  .section-head p{ max-width:340px; color:var(--ink-soft); font-size:14.5px; }
+
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px; /* the gap is filled by the background colour, creating hairlines */
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .skill-card{
+    background:var(--milk);
+    padding:36px 30px;
+    transition:background 0.3s ease, transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    /* keeps the card's own depth axis independent so the tilt
+       transform below rotates it like a real flat object in space */
+    transform-style:preserve-3d;
+    will-change:transform;
+  }
+  .skill-card:hover{
+    background:var(--milk-deep);
+    box-shadow:0 18px 30px -18px rgba(140,102,31,0.35);
+  }
+  .skill-card .icon{
+    width:38px; height:38px;
+    margin-bottom:22px;
+    color:var(--gold);
+    transform:translateZ(18px); /* floats just above the card's own plane */
+  }
+  .skill-card h3{
+    font-size:18px;
+    font-weight:500;
+    margin-bottom:10px;
+    color:var(--ink);
+  }
+  .skill-card p{
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+
+  /* Tools: a simple, calm pill cloud beneath the skill cards */
+  .tools{
+    margin-top:64px;
+  }
+  .tools .eyebrow{ margin-bottom:14px; }
+  .tools .tools-note{
+    max-width:480px;
+    color:var(--ink-soft);
+    font-size:14.5px;
+    margin-bottom:24px;
+  }
+  .tools-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .tools-list span{
+    border:1px solid var(--line);
+    padding:9px 18px;
+    border-radius:999px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  /* ============================================================
+     SECTION: PROJECTS
+     ============================================================ */
+  .projects-list{
+    display:flex;
+    flex-direction:column;
+  }
+  .project{
+    display:grid;
+    grid-template-columns:160px 1fr;
+    gap:32px;
+    align-items:start;
+    padding:38px 0;
+    border-top:1px solid var(--line);
+    /* lets the gentle tilt-on-hover (added via JS) read as a real
+       rotation in 3D space rather than a flat skew */
+    transform-style:preserve-3d;
+    transition:transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    will-change:transform;
+  }
+  .project:hover{
+    box-shadow:0 14px 26px -20px rgba(140,102,31,0.3);
+  }
+  .project:last-child{ border-bottom:1px solid var(--line); }
+
+  .project .meta{ padding-top:6px; }
+  .project .meta .tag{
+    display:inline-block;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--gold-deep);
+    border:1px solid var(--line-gold);
+    padding:5px 12px;
+    border-radius:999px;
+  }
+
+  .project .body h3{
+    font-size:24px;
+    margin-bottom:10px;
+    color:var(--ink);
+  }
+  .project .body p.desc{
+    color:var(--ink-soft);
+    max-width:560px;
+    font-size:15px;
+  }
+  .project .body .view-link{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:16px;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    color:var(--gold-deep);
+    border-bottom:1px solid var(--gold);
+    padding-bottom:2px;
+    transition:color 0.25s ease, border-color 0.25s ease;
+  }
+  .project .body .view-link:hover{
+    color:var(--ink);
+    border-color:var(--ink);
+  }
+
+  /* ============================================================
+     SECTION: CONTACT
+     ============================================================ */
+  .contact{
+    background:var(--milk-deep);
+    color:var(--ink);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:80px var(--edge);
+    text-align:left;
+    position:relative;
+    overflow:hidden;
+  }
+  .contact::before{
+    /* a soft gold glow in the corner, the one bold flourish in this section */
+    content:"";
+    position:absolute;
+    right:-120px; top:-120px;
+    width:340px; height:340px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(181,135,46,0.18), transparent 70%);
+  }
+  .contact .eyebrow{ color:var(--gold-deep); }
+  .contact .eyebrow::before{ background:var(--gold); }
+  .contact h2{
+    color:var(--ink);
+    font-size:clamp(32px,4.5vw,52px);
+    margin-top:18px;
+    max-width:640px;
+  }
+  .contact .pitch{
+    margin-top:20px;
+    max-width:520px;
+    color:var(--ink-soft);
+    font-size:16px;
+  }
+
+  .contact .email-line{
+    margin-top:40px;
+    font-family:var(--font-display);
+    font-size:clamp(22px,3vw,30px);
+    font-style:italic;
+  }
+  .contact .email-line a{
+    border-bottom:1px solid var(--gold);
+    color:var(--gold-deep);
+    padding-bottom:2px;
+    transition:color 0.25s ease, border-color 0.25s ease;
+  }
+  .contact .email-line a:hover{ color:var(--ink); border-color:var(--ink); }
+
+  .contact .cta{
+    margin-top:36px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--gold);
+    color:var(--milk);
+    padding:15px 30px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    transition:background 0.25s ease, transform 0.25s ease;
+  }
+  .contact .cta:hover{ background:var(--gold-deep); transform:translateY(-2px); }
+
+  .contact .social-row{
+    margin-top:56px;
+    display:flex;
+    gap:28px;
+    flex-wrap:wrap;
+    border-top:1px solid var(--line);
+    padding-top:28px;
+  }
+  .contact .social-row a{
+    font-size:13px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:color 0.25s ease;
+  }
+  .contact .social-row a:hover{ color:var(--gold-deep); }
+  .contact .social-row svg{ width:16px; height:16px; }
+
+  /* ============================================================
+     SECTION: FOOTER
+     ============================================================ */
+  footer{
+    padding:36px var(--edge) 50px;
+    max-width:1180px;
+    margin:0 auto;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ============================================================
+     SECTION: SCROLL-REVEAL HELPER
+     Elements with class "reveal" start slightly lower and faded out,
+     then animate into place when they scroll into view (see JS below).
+     ============================================================ */
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ============================================================
+     SECTION: RESPONSIVE / MOBILE LAYOUT
+     ----------------------------------------------------------
+     Below 880px, the fixed side panel becomes a slim floating
+     top bar instead, so it never behaves like a standard full
+     width header, just a more compact horizontal version of it.
+     ============================================================ */
+  @media (max-width: 880px){
+    .side-nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      width:100%;
+      height:auto;
+      flex-direction:row;
+      justify-content:space-between;
+      align-items:center;
+      gap:24px;
+      padding:14px var(--edge);
+      background:rgba(251,248,242,0.92);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line);
+    }
+    .brand{ padding-left:0; display:flex; align-items:center; gap:10px; flex-shrink:0; }
+    .brand .mark{ width:32px; height:32px; font-size:13px; margin-bottom:0; }
+    .brand .name{ font-size:15px; white-space:nowrap; }
+    .brand .role{ display:none; }
+    .brand .brand-tagline{ display:none; }
+    .nav-track{ display:flex; align-items:center; padding-left:0; margin:0 0 0 auto; flex:0 1 auto; min-width:0; }
+    .nav-track .rail, .nav-track .rail-fill, .nav-track .rail-dot{ display:none; } /* the vertical spine only makes sense on a tall side panel */
+    .nav-links{
+      flex-direction:row;
+      gap:28px;
+      overflow-x:auto;
+    }
+    .nav-links li button{ padding-left:0; white-space:nowrap; }
+    .nav-foot{ display:none; }
+    .page{ margin-left:0; }
+    .hero, .section{ scroll-margin-top:64px; } /* keeps the section visible below the fixed top bar when a nav link jumps to it */
+    .hero{ padding-top:110px; min-height:auto; }
+    .section{ padding-top:80px; }
+    .about-grid{ grid-template-columns:1fr; }
+    .skills-grid{ grid-template-columns:1fr 1fr; }
+    .project{ grid-template-columns:1fr; gap:14px; }
+    .values .tag{ transform:none !important; } /* flatten the zig-zag on small screens to keep rows tidy */
+  }
+
+  @media (max-width: 560px){
+    .skills-grid{ grid-template-columns:1fr; }
+    .side-nav{ padding:12px var(--edge); gap:14px; }
+    .brand .name{ font-size:13px; }
+    .nav-links{ font-size:11px; gap:14px; } /* shrink slightly so all 5 links still fit and stay tappable */
+    .nav-links li button{ padding:6px 0; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============================================================
+       SIDE NAVIGATION
+       A small "mobile menu" toggle is intentionally skipped here:
+       on phones the links simply become a horizontally scrollable
+       row inside the top bar (see CSS media query above).
+       ============================================================ -->
+  <nav class="side-nav" aria-label="Section navigation">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">BM</div>
+      <div class="name">Beryl Mutheu</div>
+      <div class="role">Executive Assistant</div>
+      <div class="brand-tagline">Executive support,<br>elevated.</div>
+    </div>
+
+    <div class="nav-track">
+      <div class="rail"></div>
+      <div class="rail-fill" id="railFill"></div>
+      <div class="rail-dot" id="railDot"></div>
+      <ul class="nav-links" id="navLinks">
+        <li><button type="button" data-section="hero">Home</button></li>
+        <li><button type="button" data-section="about">About</button></li>
+        <li><button type="button" data-section="skills">Skills</button></li>
+        <li><button type="button" data-section="projects">Projects</button></li>
+        <li><button type="button" data-section="contact">Contact</button></li>
+      </ul>
+    </div>
+
+    <div class="nav-foot">
+      Based in Nairobi, Kenya<br>
+      <a href="mailto:berylmutheu.mm@gmail.com">berylmutheu.mm@gmail.com</a>
+    </div>
+  </nav>
+
+  <!-- Everything below sits in the main scrolling column, offset to the right of the nav on desktop -->
+  <div class="page">
+
+    <!-- ============================================================
+         1. HERO
+         ============================================================ -->
+    <section id="hero" class="hero">
+      <p class="eyebrow">Executive support, elevated</p>
+
+      <h1>Beryl <span>Mutheu</span></h1>
+      <p class="role">Executive Assistant to C-suite leadership</p>
+
+      <p class="tagline">
+        A strategic partner who keeps you organised, informed, and one step ahead, across time zones,
+        with the same discretion and precision in every detail.
+      </p>
+
+      <!-- Stat counters: numbers count up via JavaScript once they enter view -->
+      <div class="stats" aria-label="Key figures">
+        <div class="stat">
+          <div class="num" data-count="5">0</div>
+          <div class="label">Years of experience</div>
+        </div>
+        <div class="stat">
+          <div class="num" data-count="12">0</div>
+          <div class="label">Executives supported</div>
+        </div>
+        <div class="stat">
+          <div class="num" data-count="6">0</div>
+          <div class="label">Industries served</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         2. ABOUT
+         ============================================================ -->
+    <section id="about" class="section">
+      <p class="eyebrow reveal">About</p>
+      <h2 class="reveal" style="margin-top:14px; margin-bottom:14px; font-size:clamp(28px,4vw,40px);">
+        The person behind the calendar
+      </h2>
+      <p class="reveal" style="max-width:480px; color:var(--ink-soft); font-size:14.5px; margin-bottom:48px;">
+        A closer look at how I work, and the values that shape every project I take on.
+      </p>
+
+      <div class="about-grid">
+        <div class="about-copy reveal">
+          <span class="big-quote" aria-hidden="true">&ldquo;</span>
+          <!-- Bio copy reproduced exactly as provided, split into paragraphs -->
+          <p>I'm Beryl M., a seasoned Executive Assistant with a track record of supporting C-suite leaders across fast-paced organisations. My work goes beyond managing calendars. I'm a strategic partner who anticipates needs, removes friction, and keeps operations flowing seamlessly.</p>
+          <p>I thrive in high-stakes environments where discretion, accuracy, and initiative are non-negotiable. From complex international travel coordination to board-level meeting management, I bring a calm, solutions-first approach to everything I do.</p>
+          <p>My strength lies in building systems that scale. Processes that don't just solve today's problem but make tomorrow easier for everyone on the team.</p>
+        </div>
+
+        <!-- The value tags cascade down the side instead of sitting in a tidy grid -->
+        <div class="values reveal" aria-label="Working values">
+          <span class="tag"><span class="dot">&#9670;</span>Resourceful</span>
+          <span class="tag"><span class="dot">&#9670;</span>Proactive</span>
+          <span class="tag"><span class="dot">&#9670;</span>Detail-oriented</span>
+          <span class="tag"><span class="dot">&#9670;</span>Systems thinker</span>
+          <span class="tag"><span class="dot">&#9670;</span>Adaptable</span>
+          <span class="tag"><span class="dot">&#9670;</span>Trustworthy</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. SKILLS & TOOLS
+         ============================================================ -->
+    <section id="skills" class="section">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">Skills &amp; tools</p>
+          <h2>Where I create the most value</h2>
+        </div>
+        <p>A blend of judgement, logistics, and the right software to make it all run on time.</p>
+      </div>
+
+      <!-- Each card: a small hand-drawn icon, a title, and a one-line description -->
+      <div class="skills-grid reveal">
+
+        <div class="skill-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <path d="M3 9.5h18M8 3v4M16 3v4M7.5 13.5h2M11 13.5h2M14.5 13.5h2M7.5 17h2M11 17h2"/>
+          </svg>
+          <h3>Calendar Management</h3>
+          <p>Designing schedules that protect focus time while keeping every priority meeting in its place.</p>
+        </div>
+
+        <div class="skill-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M3.5 17.5l6-1.5 9-9a2 2 0 0 0-2.8-2.8l-9 9-1.5 6 4 .3"/>
+            <path d="M14.5 6.5l3 3"/>
+            <path d="M3 21h7"/>
+          </svg>
+          <h3>Travel &amp; Logistics</h3>
+          <p>Planning multi-leg, international itineraries with built-in contingencies for the unexpected.</p>
+        </div>
+
+        <div class="skill-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="3" y="4" width="6" height="6" rx="1"/>
+            <rect x="9.5" y="14" width="6" height="6" rx="1"/>
+            <rect x="16" y="4" width="6" height="6" rx="1"/>
+            <path d="M6 10v3a2 2 0 0 0 2 2h3.5M19 10v3a2 2 0 0 0-2 2h-3.5"/>
+          </svg>
+          <h3>Project Coordination</h3>
+          <p>Turning scattered tasks and owners into a single, trackable plan with clear next steps.</p>
+        </div>
+
+        <div class="skill-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="4" y="3" width="16" height="18" rx="2"/>
+            <path d="M8 8h8M8 12h8M8 16h5"/>
+          </svg>
+          <h3>C-Suite Support</h3>
+          <p>Turning raw notes and data into clear reports, polished decks, and documentation that's ready for the boardroom.</p>
+        </div>
+
+        <div class="skill-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <circle cx="10.5" cy="10.5" r="6.5"/>
+            <path d="M19.5 19.5l-4.6-4.6"/>
+          </svg>
+          <h3>Research &amp; Lead Generation</h3>
+          <p>Finding, qualifying, and organising prospects and information so decisions move faster.</p>
+        </div>
+
+        <div class="skill-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <path d="M3.5 6.5l8.5 7 8.5-7"/>
+          </svg>
+          <h3>Email Management</h3>
+          <p>Triaging high volumes of correspondence so the right messages get the right attention.</p>
+        </div>
+
+      </div>
+
+      <!-- Tools, presented as a calm pill list rather than another grid of cards -->
+      <div class="tools reveal">
+        <p class="eyebrow">Tools I work in daily</p>
+        <p class="tools-note">
+          These are the platforms I already know well, but I pick up new ones quickly.
+          If your team runs on something else, consider it learned.
+        </p>
+        <div class="tools-list">
+          <span>Microsoft Office 365</span>
+          <span>Google Workspace</span>
+          <span>Outlook</span>
+          <span>Zoom</span>
+          <span>Microsoft Teams</span>
+          <span>Asana</span>
+          <span>Trello</span>
+          <span>Notion</span>
+          <span>Slack</span>
+          <span>ClickUp</span>
+          <span>Zoho</span>
+          <span>Canva</span>
+          <span>Loom</span>
+          <span>Calendly</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. PROJECTS
+         Each "View details" button reveals extra text below the
+         description, without leaving the page.
+         ============================================================ -->
+    <section id="projects" class="section">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow">Projects</p>
+          <h2>Selected work</h2>
+        </div>
+        <p>A few of the systems and processes I have built or led behind the scenes.</p>
+      </div>
+
+      <div class="projects-list reveal">
+
+        <!-- Project 1: Research and Lead Generation -->
+        <article class="project">
+          <div class="meta">
+            <span class="tag">Research &amp; Lead Gen</span>
+          </div>
+          <div class="body">
+            <h3>Free Book Signing Venues</h3>
+            <p class="desc">Researched and compiled a directory of free, family-friendly venues across Atlanta open to hosting book signings, giving a children's book author a ready-to-pitch list of locations to grow their reach.</p>
+            <a class="view-link" href="https://docs.google.com/spreadsheets/d/1DlrzYKxnwEosTu-L6RimmcZw54nJi1hN/edit?usp=sharing&ouid=118010364455228719668&rtpof=true&sd=true" target="_blank" rel="noopener">View my work <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <!-- Project 2: Executive Onboarding System -->
+        <article class="project">
+          <div class="meta">
+            <span class="tag">Process Design</span>
+          </div>
+          <div class="body">
+            <h3>The Executive Onboarding System</h3>
+            <p class="desc">Designed a repeatable onboarding framework so every new executive hire has a smooth, well-informed first ninety days.</p>
+            <a class="view-link" href="https://docs.google.com/document/d/113kXN9ZXKDIlByzhfcwZufn1LtPhd4JB/edit?usp=sharing&ouid=118010364455228719668&rtpof=true&sd=true" target="_blank" rel="noopener">View my work <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+        <!-- Project 3: Las Vegas business trip itinerary -->
+        <article class="project">
+          <div class="meta">
+            <span class="tag">Travel &amp; Logistics</span>
+          </div>
+          <div class="body">
+            <h3>Las Vegas Business Trip Itinerary</h3>
+            <p class="desc">Planned and coordinated a multi-day business trip to Las Vegas for an executive, building a detailed itinerary covering flights, accommodation, meetings, and ground logistics.</p>
+            <a class="view-link" href="https://docs.google.com/presentation/d/1aDfOJj96CFS2TundP-QCKMx-4wxUHQavLuc545iPKz4/edit?usp=sharing" target="_blank" rel="noopener">View my work <span aria-hidden="true">&#8599;</span></a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. CONTACT
+         ============================================================ -->
+    <section id="contact" class="section">
+      <div class="contact reveal">
+        <p class="eyebrow">Contact</p>
+        <h2>Let's keep your operations running smoothly.</h2>
+        <p class="pitch">
+          Whether you need ongoing executive support or help with a specific project, I am always
+          glad to have a conversation first.
+        </p>
+
+        <p class="email-line">
+          <a href="mailto:berylmutheu.mm@gmail.com">berylmutheu.mm@gmail.com</a>
+        </p>
+
+        <!-- NOTE: this currently opens an email with the subject pre-filled.
+             If you set up a scheduling tool (Calendly, Cal.com, etc.), replace
+             the href below with that booking link instead. -->
+        <a class="cta" href="https://calendly.com/berylmutheu-mm/discovery-call-with-beryl" target="_blank" rel="noopener">
+          Book a call <span aria-hidden="true">&#8599;</span>
+        </a>
+
+        <div class="social-row">
+          <!-- NOTE: the CV link below still needs to point to your real CV file or its share link -->
+          <a href="https://www.linkedin.com/in/beryl-mutheu" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5.001zM3 9h4v12H3V9zm6.5 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.6c0-1.34-.02-3.07-1.88-3.07-1.88 0-2.17 1.47-2.17 2.98V21h-4V9z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. FOOTER
+         ============================================================ -->
+    <footer>
+      <span>&copy; 2026 Beryl Mutheu. All rights reserved.</span>
+      <span>Executive support, elevated.</span>
+    </footer>
+
+  </div>
+
+  <!--
+    ============================================================
+    SECTION: JAVASCRIPT (the site's behaviour)
+    ----------------------------------------------------------
+    Three small, independent features live here:
+      1. Active-link highlighting + the gold "spine" position,
+         both driven by which section is on screen.
+      2. Counting up the hero's stat numbers once they appear.
+      3. Expanding / collapsing each project's "View details" panel.
+    Each is explained in plain language above its code.
+    ============================================================
+  -->
+  <script>
+    // Wait until the page's HTML has fully loaded before running any script.
+    document.addEventListener('DOMContentLoaded', function () {
+
+      /* ----------------------------------------------------------
+         FEATURE 1: Active section highlighting + gold spine
+         ----------------------------------------------------------
+         We grab every <section> that has an id matching a nav
+         link, then use an "IntersectionObserver" (a built-in
+         browser tool that watches when elements enter/leave the
+         viewport) to know which section is currently in view.
+      ---------------------------------------------------------- */
+      var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links button'));
+      var sections = navLinks.map(function (link) {
+        var id = link.getAttribute('data-section');
+        return document.getElementById(id);
+      });
+
+      // Each header item is a plain button (not a link) that scrolls to its section.
+      navLinks.forEach(function (link, i) {
+        link.addEventListener('click', function () {
+          var target = sections[i];
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      var railFill = document.getElementById('railFill');
+      var railDot = document.getElementById('railDot');
+      var navTrack = document.querySelector('.nav-track');
+
+      function setActiveLink(sectionId) {
+        navLinks.forEach(function (link) {
+          if (link.getAttribute('data-section') === sectionId) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+
+      // Observe every section. When more than half of a section is
+      // visible on screen, mark its matching nav link as active.
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              setActiveLink(entry.target.id);
+            }
+          });
+        }, { threshold: 0.45 });
+
+        sections.forEach(function (section) {
+          if (section) observer.observe(section);
+        });
+      }
+
+      // Move the gold spine (rail-fill + rail-dot) to match how far
+      // down the whole page we have scrolled. This is plain maths:
+      // (how far scrolled) / (total scrollable distance) = a percentage.
+      function updateSpine() {
+        if (!navTrack) return; // nav-track is hidden on mobile, skip the maths there
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var percent = docHeight > 0 ? (scrollTop / docHeight) : 0;
+        var trackHeight = navTrack.clientHeight - 8; // small inset to match the CSS rail
+
+        railFill.style.height = (percent * 100) + '%';
+        railDot.style.top = (4 + percent * trackHeight) + 'px';
+      }
+
+      window.addEventListener('scroll', updateSpine);
+      window.addEventListener('resize', updateSpine);
+      updateSpine(); // run once immediately, so the spine is correct on page load
+
+      /* ----------------------------------------------------------
+         FEATURE 2: Counting up the hero stats
+         ----------------------------------------------------------
+         Each number starts at 0 in the HTML. When the hero scrolls
+         into view, we animate from 0 up to the number stored in
+         the element's "data-count" attribute.
+      ---------------------------------------------------------- */
+      var counters = document.querySelectorAll('.stat .num');
+      var countersStarted = false;
+
+      function animateCounters() {
+        if (countersStarted) return; // only ever run this once
+        countersStarted = true;
+
+        counters.forEach(function (counter) {
+          var target = parseInt(counter.getAttribute('data-count'), 10);
+          var current = 0;
+          var duration = 1200; // total animation time in milliseconds
+          var stepTime = 30;   // how often we update the number
+          var steps = duration / stepTime;
+          var increment = target / steps;
+
+          var timer = setInterval(function () {
+            current += increment;
+            if (current >= target) {
+              counter.textContent = target; // snap exactly to the target at the end
+              clearInterval(timer);
+            } else {
+              counter.textContent = Math.floor(current);
+            }
+          }, stepTime);
+        });
+      }
+
+      var heroSection = document.getElementById('hero');
+      if (heroSection && 'IntersectionObserver' in window) {
+        var heroObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              animateCounters();
+            }
+          });
+        }, { threshold: 0.4 });
+        heroObserver.observe(heroSection);
+      } else {
+        // Fallback for very old browsers without IntersectionObserver support
+        animateCounters();
+      }
+
+      /* ----------------------------------------------------------
+         FEATURE 3: Scroll-reveal for sections
+         ----------------------------------------------------------
+         Any element with the class "reveal" fades and slides up
+         into place the first time it becomes visible.
+      ---------------------------------------------------------- */
+      var revealEls = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var revealObserver = new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              obs.unobserve(entry.target); // only animate once, then stop watching
+            }
+          });
+        }, { threshold: 0.15 });
+
+        revealEls.forEach(function (el) { revealObserver.observe(el); });
+      } else {
+        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      }
+
+      /* ----------------------------------------------------------
+         FEATURE 4: 3D tilt, reused across skill cards and project rows
+         ----------------------------------------------------------
+         As the mouse moves over an element, we work out where the
+         cursor is relative to that element's centre (as a -1 to 1
+         value on each axis), then rotate the element slightly toward
+         the cursor. This is wrapped in a function so we can apply
+         the same trick to more than one kind of element, just with
+         a smaller "maxTilt" for the wider, busier project rows.
+      ---------------------------------------------------------- */
+      function applyTilt(selector, maxTilt) {
+        var elements = document.querySelectorAll(selector);
+
+        elements.forEach(function (el) {
+          el.addEventListener('mousemove', function (event) {
+            var rect = el.getBoundingClientRect();
+
+            // Cursor position inside the element, from 0 (left/top) to 1 (right/bottom)
+            var xRatio = (event.clientX - rect.left) / rect.width;
+            var yRatio = (event.clientY - rect.top) / rect.height;
+
+            // Convert to a -1 to 1 range so the centre of the element is 0
+            var xOffset = (xRatio - 0.5) * 2;
+            var yOffset = (yRatio - 0.5) * 2;
+
+            var rotateY = xOffset * maxTilt;
+            var rotateX = yOffset * -maxTilt;
+
+            el.style.transform =
+              'perspective(900px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateZ(6px)';
+          });
+
+          // When the cursor leaves, smoothly return the element to flat
+          el.addEventListener('mouseleave', function () {
+            el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+          });
+        });
+      }
+
+      applyTilt('.skill-card', 7); // a noticeable tilt on the smaller cards
+      applyTilt('.project', 2.5);  // a much gentler tilt on the wide project rows
+
+      /* ----------------------------------------------------------
+         FEATURE 5: Hero parallax
+         ----------------------------------------------------------
+         As the cursor moves anywhere on screen, the hero's text
+         layers drift very slightly in the opposite direction, as
+         if they are floating above the page rather than printed
+         flat on it. Each layer moves by a different amount, which
+         is what creates the illusion of depth (closer things move
+         more than things further away, just like in real life).
+      ---------------------------------------------------------- */
+      var heroForParallax = document.getElementById('hero');
+      if (heroForParallax) {
+        var parallaxLayers = [
+          { el: heroForParallax.querySelector('h1'), strength: 14 },
+          { el: heroForParallax.querySelector('.role'), strength: 9 },
+          { el: heroForParallax.querySelector('.tagline'), strength: 6 },
+          { el: heroForParallax.querySelector('.stats'), strength: 4 }
+        ];
+
+        window.addEventListener('mousemove', function (event) {
+          // Express the cursor position as a -1 to 1 value across the
+          // full window, so the centre of the screen is "no movement"
+          var xOffset = (event.clientX / window.innerWidth - 0.5) * 2;
+          var yOffset = (event.clientY / window.innerHeight - 0.5) * 2;
+
+          parallaxLayers.forEach(function (layer) {
+            if (!layer.el) return;
+            var moveX = xOffset * layer.strength;
+            var moveY = yOffset * layer.strength;
+            layer.el.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+          });
+        });
+      }
+
+    });
+  </script>
+
+</body>
+</html>
